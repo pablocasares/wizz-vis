@@ -1,11 +1,11 @@
 import ReactOnRails from 'react-on-rails';
 
-import Dashboard from './components/Dashboard';
+import DashboardApp from './startup/DashboardApp';
 import WidgetBase from './components/WidgetBase';
 import Clock from './components/Clock';
 
 ReactOnRails.register({
-  Dashboard,
+  DashboardApp,
   WidgetBase,
   Clock
 });
