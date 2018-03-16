@@ -1,15 +1,15 @@
 import { combineReducers } from 'redux';
-import { DASHBOARD_NAME_UPDATE } from '../constants/dashboardConstants';
+import { DASHBOARD_RELOAD_TIMESTAMP_UPDATE } from '../constants/dashboardConstants';
 
-const name = (state = '', action) => {
+const reloadTimestamp = (state = '', action) => {
   switch (action.type) {
-    case DASHBOARD_NAME_UPDATE:
+    case DASHBOARD_RELOAD_TIMESTAMP_UPDATE:
       return action.text;
     default:
       return state;
   }
 };
 
-const dashboardReducer = combineReducers({ name });
+const dashboardReducer = combineReducers({ reloadTimestamp });
 
 export default dashboardReducer;

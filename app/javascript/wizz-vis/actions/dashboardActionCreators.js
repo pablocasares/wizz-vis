@@ -1,8 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 
-import { DASHBOARD_NAME_UPDATE } from '../constants/dashboardConstants';
+import { DASHBOARD_RELOAD_TIMESTAMP_UPDATE } from '../constants/dashboardConstants';
 
-export const updateName = (text) => ({
-  type: DASHBOARD_NAME_UPDATE,
+export const updateReloadTimestamp = (text) => ({
+  type: DASHBOARD_RELOAD_TIMESTAMP_UPDATE,
   text,
 });

@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from "react-dom";
-import PropTypes from 'prop-types';
 import request from 'axios';
 import {Responsive, WidthProvider} from 'react-grid-layout';
 import WidgetBase from './WidgetBase';
@@ -12,10 +11,6 @@ const COLS = { lg: 12, md: 12, sm: 12, xs: 1, xxs: 1 };
 const ROWHEIGHT = 100;
 
 export default class Dashboard extends React.Component {
-  static propTypes = {
-    name: PropTypes.string.isRequired, // this is passed from the Rails view
-  };
-
   constructor(props) {
     super(props);
 
@@ -24,14 +19,9 @@ export default class Dashboard extends React.Component {
       layout: null,
       fetchWidgetsError: null,
       updateLayoutError: null,
-      reloadTimestamp: null,
-      name: this.props.name
+      reloadTimestamp: null
     };
   }
-
-  updateName = (name) => {
-    this.setState({ name });
-  };
 
   componentDidMount() {
     this.fetchWidgets();
@@ -78,6 +68,10 @@ export default class Dashboard extends React.Component {
     this.setState({ reloadTimestamp: Date.now() })
   }
 
+  updateReloadTimestamp = (reloadTimestamp) => {
+    this.setState({ reloadTimestamp: Date.now() })
+  }
+
   render () {
     // layout is an array of objects, see the demo for more complete usage
     const layout = { lg: (this.state.layout || []) };
@@ -93,7 +87,7 @@ export default class Dashboard extends React.Component {
 
     return (
     <div>
-      <Clock clockReload={ this.fireReload.bind(this) } interval={ this.props.interval }/>
+      <Clock clockReload={ this.updateReloadTimestamp.bind(this) } interval={ this.props.interval }/>
 
       <ResponsiveReactGridLayout
         className={'layout ' + this.props.theme}
@@ -109,21 +103,9 @@ export default class Dashboard extends React.Component {
         { widgets }
 
       </ResponsiveReactGridLayout>
-      <h3>
-        Hello, {this.state.name}!
-      </h3>
-      <hr />
-      <form >
-        <label htmlFor="name">
-          Say hello to:
-        </label>
-        <input
-          id="name"
-          type="text"
-          value={this.state.name}
-          onChange={(e) => this.updateName(e.target.value)}
-        />
-      </form>
+
+      <button type="button" onClick={this.updateReloadTimestamp}>Reload Dashboard</button>
+      Reload Timestamp: {this.state.reloadTimestamp}
     </div>
     )
   }
