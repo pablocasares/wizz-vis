@@ -138,9 +138,10 @@ jobs:
           command: |
             docker tag ${APP_NAME}:latest gcr.io/${GCLOUD_PROJECT}/${APP_NAME}:latest
       - run:
-          name: Push latest image to registry
+          name: Push latest image to Google Cloud Registry
           command: |
-            gcloud docker -- push gcr.io/${GCLOUD_PROJECT}/${APP_NAME}:latest
+            gcloud auth configure-docker --quiet
+            docker push gcr.io/${GCLOUD_PROJECT}/${APP_NAME}:latest
 
   tagged-deploy:
     <<: *gcloud-configuration
@@ -163,9 +164,10 @@ jobs:
           command: |
             docker tag ${APP_NAME}:latest gcr.io/${GCLOUD_PROJECT}/${APP_NAME}:stable
       - run:
-          name: Push stable to registry
+          name: Push stable to Google Cloud Registry
           command: |
-            gcloud docker -- push gcr.io/${GCLOUD_PROJECT}/${APP_NAME}:stable
+            gcloud auth configure-docker --quiet
+            docker push gcr.io/${GCLOUD_PROJECT}/${APP_NAME}:stable
       - run:
           name: Tag versioned image in the registry
           command: |
