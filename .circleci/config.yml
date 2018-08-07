@@ -127,12 +127,11 @@ jobs:
           name: Load docker images
           command: zcat caches/${APP_NAME}.tgz | docker load
       - run:
-          name: Config gcloud and docker
+          name: Config gcloud
           command: |
             set +o pipefail
             echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
             gcloud config set project $GCLOUD_PROJECT
       - run:
           name: Tag master
@@ -146,6 +145,7 @@ jobs:
       - run:
           name: Push lastest image to Docker Hub
           command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker tag ${APP_NAME}:latest ${DOCKER_ORGANIZATION}/${APP_NAME}:latest
             docker push ${DOCKER_ORGANIZATION}/${APP_NAME}:latest
 
@@ -159,12 +159,11 @@ jobs:
           name: Load docker images
           command: zcat caches/${APP_NAME}.tgz | docker load
       - run:
-          name: Config gcloud and docker
+          name: Config gcloud
           command: |
             set +o pipefail
             echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
             gcloud config set project $GCLOUD_PROJECT
       - run:
           name: Tag stable
@@ -178,6 +177,7 @@ jobs:
       - run:
           name: Push stable and tagged image to Docker Hub
           command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker tag ${APP_NAME}:latest ${DOCKER_ORGANIZATION}/${APP_NAME}:stable
             docker push ${DOCKER_ORGANIZATION}/${APP_NAME}:stable
             docker tag ${DOCKER_ORGANIZATION}/${APP_NAME}:stable ${DOCKER_ORGANIZATION}/${APP_NAME}:${CIRCLE_TAG#?}
