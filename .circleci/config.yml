@@ -127,11 +127,12 @@ jobs:
           name: Load docker images
           command: zcat caches/${APP_NAME}.tgz | docker load
       - run:
-          name: Config gcloud
+          name: Config gcloud and docker
           command: |
             set +o pipefail
             echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
             gcloud config set project $GCLOUD_PROJECT
       - run:
           name: Tag master
@@ -142,6 +143,9 @@ jobs:
           command: |
             gcloud auth configure-docker --quiet
             docker push gcr.io/${GCLOUD_PROJECT}/${APP_NAME}:latest
+      - run:
+          name: Push lastest image to Docker Hub
+          command: docker push ${DOCKER_ORGANIZATION}/${APP_NAME}:latest
 
   tagged-deploy:
     <<: *gcloud-configuration
@@ -153,11 +157,12 @@ jobs:
           name: Load docker images
           command: zcat caches/${APP_NAME}.tgz | docker load
       - run:
-          name: Config gcloud
+          name: Config gcloud and docker
           command: |
             set +o pipefail
             echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
             gcloud config set project $GCLOUD_PROJECT
       - run:
           name: Tag stable
@@ -168,6 +173,11 @@ jobs:
           command: |
             gcloud auth configure-docker --quiet
             docker push gcr.io/${GCLOUD_PROJECT}/${APP_NAME}:stable
+      - run:
+          name: Push stable and tagged image to Docker Hub
+          command: |
+            docker push ${DOCKER_ORGANIZATION}/${APP_NAME}:stable
+            docker tag ${DOCKER_ORGANIZATION}/${APP_NAME}:stable ${DOCKER_ORGANIZATION}/${APP_NAME}:${CIRCLE_TAG#?}
       - run:
           name: Tag versioned image in the registry
           command: |
