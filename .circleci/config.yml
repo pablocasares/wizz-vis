@@ -145,7 +145,7 @@ jobs:
       - run:
           name: Push lastest image to Docker Hub
           command: |
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             docker tag ${APP_NAME}:latest ${DOCKER_ORGANIZATION}/${APP_NAME}:latest
             docker push ${DOCKER_ORGANIZATION}/${APP_NAME}:latest
 
@@ -177,7 +177,7 @@ jobs:
       - run:
           name: Push stable and tagged image to Docker Hub
           command: |
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             docker tag ${APP_NAME}:latest ${DOCKER_ORGANIZATION}/${APP_NAME}:stable
             docker push ${DOCKER_ORGANIZATION}/${APP_NAME}:stable
             docker tag ${DOCKER_ORGANIZATION}/${APP_NAME}:stable ${DOCKER_ORGANIZATION}/${APP_NAME}:${CIRCLE_TAG#?}
